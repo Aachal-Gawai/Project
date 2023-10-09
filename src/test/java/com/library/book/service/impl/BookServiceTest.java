@@ -3,6 +3,7 @@ package com.library.book.service.impl;
 import com.library.book.entities.Book;
 import com.library.book.exception.SearchRecordsNotFoundException;
 import com.library.book.model.BookDetails;
+import com.library.book.model.BookUpdateDetails;
 import com.library.book.repositries.IBookRepository;
 import com.library.book.service.IBookService;
 import org.junit.jupiter.api.BeforeEach;
@@ -201,10 +202,11 @@ public class BookServiceTest {
     public void testUpdateBook() {
         // Define a book ID and an updated BookDetails object
         Long bookId = 1L;
-        BookDetails updatedBookDetails = new BookDetails();
+        BookUpdateDetails updatedBookDetails=new BookUpdateDetails();
         updatedBookDetails.setTitle("The Psychology of Money");
         updatedBookDetails.setPublicationBy("");
         updatedBookDetails.setAuthor("");
+
         // Add more updates as needed
 
         // Create existing Book object

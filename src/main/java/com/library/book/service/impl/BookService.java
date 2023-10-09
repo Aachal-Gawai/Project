@@ -3,6 +3,7 @@ package com.library.book.service.impl;
 import com.library.book.entities.Book;
 import com.library.book.exception.SearchRecordsNotFoundException;
 import com.library.book.model.BookDetails;
+import com.library.book.model.BookUpdateDetails;
 import com.library.book.repositries.IBookRepository;
 import com.library.book.service.IBookService;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public BookDetails updateBook(Long bookId, BookDetails updatedBook) {
+    public BookDetails updateBook(Long bookId, BookUpdateDetails updatedBook) {
         log.info("Update the book record for book id {}",bookId);
         Book book=new Book();
         modelMapper.map(updatedBook,book);

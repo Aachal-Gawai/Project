@@ -4,6 +4,7 @@ package com.library.book.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.book.entities.Book;
 import com.library.book.model.BookDetails;
+import com.library.book.model.BookUpdateDetails;
 import com.library.book.service.IBookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,15 +90,17 @@ public class BookControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].title").value(book.getTitle()));
 
-        // Add more assertions if needed to verify other attributes of the returned book.
     }
 
     @Test
     public void testCreateBook() throws Exception {
         // Create a dummy BookDetails object
         BookDetails bookDetails = new BookDetails();
-        bookDetails.setTitle("Sample Title");
-        bookDetails.setAuthor("Sample Author");
+        bookDetails.setTitle("The Psychology of Money");
+        bookDetails.setAuthor("Morgan Housel");
+        bookDetails.setCreateDate("2023-10-09");
+        bookDetails.setUpdateDate("2023-10-09");
+
         // Set other attributes as needed
 
         // Convert the BookDetails object to JSON
@@ -114,7 +117,6 @@ public class BookControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value(bookDetails.getTitle()));
 
-        // Add more assertions if needed to verify other attributes of the created book.
     }
 
     @Test
@@ -122,16 +124,22 @@ public class BookControllerTest {
         Long bookId = 1L;
 
         // Create a dummy BookDetails object for the updated book
-        BookDetails updatedBookDetails = new BookDetails();
-        updatedBookDetails.setTitle("Updated Title");
-        updatedBookDetails.setAuthor("Updated Author");
+        BookDetails updatedBookResponse = new BookDetails();
+        updatedBookResponse.setTitle("The Psychology of Money");
+        updatedBookResponse.setAuthor("Morgan Housel");
+
         // Set other attributes as needed
 
+        BookUpdateDetails updatedBookDetails=new BookUpdateDetails();
+        updatedBookDetails.setTitle("The Psychology of Money");
+        updatedBookDetails.setPublicationBy("");
+        updatedBookDetails.setAuthor("");
+        updatedBookDetails.setUpdateDate("2023-10-09");
         // Convert the updated BookDetails object to JSON
         String updatedBookDetailsJson = objectMapper.writeValueAsString(updatedBookDetails);
 
         // Mock the behavior of bookService.updateBook()
-        when(bookService.updateBook(eq(bookId), any(BookDetails.class))).thenReturn(updatedBookDetails);
+        when(bookService.updateBook(eq(bookId), any(BookUpdateDetails.class))).thenReturn(updatedBookResponse);
 
         // Perform a PUT request to /updateBook/{bookId} with JSON payload
         mockMvc.perform(put("/api/books/updateBook/{bookId}", bookId)
@@ -139,9 +147,8 @@ public class BookControllerTest {
                         .content(updatedBookDetailsJson))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.title").value(updatedBookDetails.getTitle()));
+                .andExpect(jsonPath("$.title").value(updatedBookResponse.getTitle()));
 
-        // Add more assertions if needed to verify other attributes of the updated book.
     }
 
     @Test
@@ -156,7 +163,6 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Deleted Successfully"));
 
-        // You can add more assertions to verify the response for different cases (e.g., book not found).
     }
 }
 

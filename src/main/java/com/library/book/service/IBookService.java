@@ -3,6 +3,7 @@ package com.library.book.service;
 
 import com.library.book.entities.Book;
 import com.library.book.model.BookDetails;
+import com.library.book.model.BookUpdateDetails;
 
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface IBookService {
 
     public BookDetails createBook(BookDetails bookDetails);
 
-    public BookDetails updateBook(Long bookId,BookDetails updatedBook);
+    public BookDetails updateBook(Long bookId, BookUpdateDetails updatedBook);
 
     public String deleteBook(Long bookId);
 

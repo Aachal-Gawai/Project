@@ -2,11 +2,14 @@ package com.library.book.controller;
 
 import com.library.book.entities.Book;
 import com.library.book.model.BookDetails;
+import com.library.book.model.BookUpdateDetails;
 import com.library.book.service.IBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -28,12 +31,12 @@ public class BookController {
     }
 
     @PostMapping("/createBook")
-    public BookDetails createBook(@RequestBody BookDetails bookDetails) {
+    public BookDetails createBook(@RequestBody @Valid BookDetails bookDetails) {
         return bookService.createBook(bookDetails);
     }
 
     @PutMapping("/updateBook/{bookId}")
-    public BookDetails updateBook(@PathVariable Long bookId, @RequestBody BookDetails updatedBook) {
+    public BookDetails updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateDetails updatedBook) {
         return bookService.updateBook(bookId, updatedBook);
     }
 
