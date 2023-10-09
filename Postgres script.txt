@@ -1,0 +1,99 @@
+---Create the main table (book table)
+
+CREATE TABLE book (
+    id serial PRIMARY KEY,
+    title varchar(250) NOT NULL,
+    author varchar(250),
+    publication_by varchar(250),
+    userId varchar(250),
+    create_date timestamp DEFAULT current_timestamp,
+    update_date timestamp DEFAULT current_timestamp
+);
+
+---Create the audit table (book_audit table)
+
+CREATE TABLE book_audit (
+    audit_id serial PRIMARY KEY,
+    action_type varchar(10),  -- Insert, Update, or Delete
+    book_id int,
+    book_userId varchar(250),
+    title_before_change varchar(250),
+    title_after_change varchar(250),
+    author_before_change varchar(250),
+    author_after_change varchar(250),
+    publication_by_before_change varchar(250),
+    publication_by_after_change varchar(250),
+    change_timestamp timestamp DEFAULT current_timestamp
+);
+
+-- Create the trigger function
+
+CREATE OR REPLACE FUNCTION book_audit_trigger() RETURNS TRIGGER AS $$
+BEGIN
+
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO book_audit (
+            action_type,
+            book_id,
+            book_userId,
+            title_after_change,
+            author_after_change,
+            publication_by_after_change
+        ) VALUES (
+            'Insert',
+            NEW.id,
+            NEW.userId,
+            NEW.title,
+            NEW.author,
+            NEW.publication_by
+        );
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO book_audit (
+            action_type,
+            book_id,
+            book_userId,
+            title_before_change,
+            title_after_change,
+            author_before_change,
+            author_after_change,
+            publication_by_before_change,
+            publication_by_after_change
+        ) VALUES (
+            'Update',
+            NEW.id,
+            NEW.userId,
+            OLD.title,
+            NEW.title,
+            OLD.author,
+            NEW.author,
+            OLD.publication_by,
+            NEW.publication_by
+        );
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO book_audit (
+            action_type,
+            book_id,
+            book_userId,
+            title_before_change,
+            author_before_change,
+            publication_by_before_change
+        ) VALUES (
+            'Delete',
+            OLD.id,
+            OLD.userId,
+            OLD.title,
+            OLD.author,
+            OLD.publication_by
+        );
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+ 
+-- Create the trigger
+CREATE TRIGGER book_audit
+AFTER INSERT OR UPDATE OR DELETE ON book
+FOR EACH ROW
+EXECUTE PROCEDURE book_audit_trigger();
+
